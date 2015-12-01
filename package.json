@@ -1,0 +1,29 @@
+{
+  "name": "dual-exec",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "lint": "jshint *.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/plediii/dual-exec.git"
+  },
+  "author": "Paul J. Ledbetter III",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plediii/dual-exec/issues"
+  },
+  "homepage": "https://github.com/plediii/dual-exec#readme",
+  "pre-commit": [
+    "lint"
+  ],
+  "description": "Execute shell commands across dual api domains",
+  "devDependencies": {
+    "jshint": "^2.8.0",
+    "pre-commit": "^1.1.2"
+  },
+  "dependencies": {
+  }
+}
