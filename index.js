@@ -3,24 +3,28 @@
 var cp = require('child_process');
 
 module.exports = function (Domain) {
-    Domain.prototype.exec = function (point) {
+    Domain.prototype.exec = function (params, dest) {
         var d = this;
-        d.mount(point, function (body, ctxt) {
-            var params = body || {};
-            params.cwd = params.cwd || '/tmp';
-            return cp.exec(params, function (err, stdout, stderr) {
-                var result = {
-                    stdout: stdout
-                    , stderr: stderr
-                };
-                if (err) {
-                    result.err = err.message;
-                    console.error('dual-exec error: ', err, err.stack);
-                    ctxt.return(result, { statusCode: 500 });
-                } else {
-                    ctxt.return(result);
-                }
-            });
+        var cmd = cp.spawn(params.command, params.args);
+        var stdout = dest.concat('stdout');
+        var stderr = dest.concat('stderr');
+        var end = dest.concat('close');
+        
+        cmd.stdout.on('data', function (data) {
+            d.send(stdout, [], data.toString());
+        });
+        cmd.stderr.on('data', function (data) {
+            d.send(stderr, [], data.toString());
+        });
+
+        // cmd.stdout.on('error', function () {
+        //     console.log('error ', arguments);
+        // });
+        cmd.on('error', function (err) {
+            console.error('dual-exec error ', err, err.stack);
+        });
+        cmd.on('close', function (code) {
+            d.send(end, [], null, { statusCode: code });
         });
     };
 };
